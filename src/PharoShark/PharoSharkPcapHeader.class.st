@@ -15,6 +15,30 @@ Class {
 	#tag : 'Model'
 }
 
+{ #category : 'parsing' }
+PharoSharkPcapHeader class >> parseStream: aStream [
+
+	| pcapHeader magic major minor timeZone precision snapLength etherType |
+	pcapHeader := self new.
+	magic := (aStream next: 4) reversed asInteger.
+	major := (aStream next: 2) reversed asInteger.
+	minor := (aStream next: 2) reversed asInteger.
+	timeZone := (aStream next: 4) reversed asInteger.
+	precision := (aStream next: 4) reversed asInteger.
+	snapLength := (aStream next: 4) reversed asInteger.
+	etherType := (aStream next: 4) reversed asInteger.
+
+	^ self new
+		  initializeWithMagic: magic
+		  versionMajor: major
+		  versionMinor: minor
+		  timeZone: timeZone
+		  precision: precision
+		  maxSnapshotLength: snapLength
+		  etherType: etherType;
+		  yourself
+]
+
 { #category : 'accessing' }
 PharoSharkPcapHeader >> etherType [
 	^ etherType 
