@@ -1,0 +1,53 @@
+Class {
+	#name : 'PharoSharkEthernetProtocol',
+	#superclass : 'PharoSharkAbstractProtocol',
+	#instVars : [
+		'srcMac',
+		'dstMac',
+		'vlan',
+		'nextProtocol'
+	],
+	#category : 'PharoShark-Model',
+	#package : 'PharoShark',
+	#tag : 'Model'
+}
+
+{ #category : 'as yet unclassified' }
+PharoSharkEthernetProtocol class >> ip4Type [
+	^ 16r0800
+]
+
+{ #category : 'as yet unclassified' }
+PharoSharkEthernetProtocol class >> ip6Type [
+	^ 16r86DD
+]
+
+{ #category : 'parsing' }
+PharoSharkEthernetProtocol class >> parseStream: aStream [
+	| ethernetLayer |
+	ethernetLayer := self new. 
+	(ethernetLayer initializeFromStream: aStream) ifFalse: [ ^ nil ].
+]
+
+{ #category : 'as yet unclassified' }
+PharoSharkEthernetProtocol class >> vlanType [
+	^ 16r8100
+]
+
+{ #category : 'initialization' }
+PharoSharkEthernetProtocol >> initializeFromStream: aStream [
+
+	| nextType |
+	dstMac := aStream next: 6.
+	srcMac := aStream next: 6.
+	nextType := (aStream next: 2) asInteger.
+	nextType = self class ip4Type ifTrue: [
+		nextProtocol := PharoSharkIP4Protocol parseStream: aStream ].
+	nextType = self class ip6Type ifTrue: [
+		nextProtocol := PharoSharkIP6Protocol parseStream: aStream ].
+	nextType = self class vlanType ifTrue: [ "Skip TCI"
+			aStream skip: 2.
+			vlan := (aStream next: 2) reversed asInteger ].
+	aStream atEnd ifTrue: [ ^ false ].
+	^ true
+]
