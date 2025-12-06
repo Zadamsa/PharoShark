@@ -16,7 +16,7 @@ PharoSharkTopMenuPresenter >> connectPresenters [
 	openFileButton action: [
 			parseFileCallaback ifNotNil: [
 					parseFileCallaback value:
-						(UIManager default chooseFullFileNameMatching: '*.pcap') asFileReference ] ]
+						((UIManager default chooseFullFileNameMatching: '*.pcap') ifNotNil: [ :path | path asFileReference ]) ] ]
 ]
 
 { #category : 'initialization' }

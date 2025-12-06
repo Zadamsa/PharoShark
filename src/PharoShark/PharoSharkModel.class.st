@@ -23,16 +23,18 @@ PharoSharkModel >> packets [
 { #category : 'parsing' }
 PharoSharkModel >> parseFile: aFile [
 
-	| parsedPackets packet header |
+	| parsedPackets packet header stream|
 	parsedPackets := OrderedCollection new.
-
-	header := PharoSharkPcapHeader parseStream: aFile binaryReadStream.
+	stream := aFile binaryReadStream .
+	header := PharoSharkPcapHeader parseStream: stream .
 	header ifNil: [ ^ #( #error 'Failed to read header from file!' ) ].
-	header magicNumber = 16rA1B2B3B4 ifFalse: [ ^ #( #error 'Invalid magic number found!') ].
+	header magicNumber = 16rA1B2C3D4 ifFalse: [ ^ #( #error 'Invalid magic number found!') ].
 	header major = 2 ifFalse: [ ^ #( #error 'Unsupported major version ', header major , '!') ].
-	header minor = 4 ifFalse: [ ^ #( #error 'Invalid magic number found!') ].
-	header etherType = 1 ifFalse: [ ^ #( #error 'Invalid magic number found!') ].
+	header minor = 4 ifFalse: [ ^ #( #error 'Unsupported minor version!') ].
+	header etherType = 1 ifFalse: [ ^ #( #error 'Unsupported error type!') ].
 
-	[ packet := PharoSharkPacket parseStream: aFile readStream ]
-		whileNotNil: [ parsedPackets append: packet ]
+	[ packet := PharoSharkPacket parseStream: stream ]
+		whileNotNil: [ parsedPackets append: packet ].
+		
+	^ #( #success parsedPackets )
 ]
