@@ -12,6 +12,15 @@ Class {
 	#tag : 'Model'
 }
 
+{ #category : 'accessing' }
+PharoSharkICMP6Protocol >> fieldsInfo [
+
+	^ {
+		  ('Type: ' , type asString).
+		  ('Code: ' , code asString).
+		  ('Checksum: 0x' , (checksum printStringBase: 16)) }
+]
+
 { #category : 'initialization' }
 PharoSharkICMP6Protocol >> initializeFromStream: aStream [
 
@@ -21,4 +30,14 @@ PharoSharkICMP6Protocol >> initializeFromStream: aStream [
 	body := (aStream next: 4) reversed asInteger.
 
 	^ true
+]
+
+{ #category : 'as yet unclassified' }
+PharoSharkICMP6Protocol >> nextProtocol [
+	^ nil 
+]
+
+{ #category : 'default' }
+PharoSharkICMP6Protocol >> shortName [ 
+	^ 'ICMPv6'
 ]
