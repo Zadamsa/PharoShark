@@ -17,20 +17,22 @@ Class {
 
 { #category : 'initialization' }
 PharoSharkPresenter >> connectPresenters [
-	"TODO open file window"
 
-	"openFileButton action: [
-			openedFile := UIManager default chooseFullFileNameMatching: '*.pcap' ].
-"
+	topMenu parseFileCallaback: [ :aFile |
+			| parsingResult |
+			parsingResult := model parseFile: aFile.
+			parsingResult first = #success ifTrue: [
+				packetsListWindow packets: parsingResult second ].
+			parsingResult first = #error ifTrue: [
+					UIManager default inform:
+						'Parsing error occured ' , parsingResult second ] ].
 
-	"UIManager default  alert: 'test' title: 'test' ."
-
-	topMenu parseFileCallaback: [ :aFile | model parseFile: aFile ].
-
-	packetsListWindow
-		items: model packets;
-		whenSelectedDo: [ :doubleClickedPacket |  ];
-		whenActivatedDo: [ :singleClickedPacket |  ]
+	topMenu openStatisticWindowCallback: [
+			| statisticsWindow |
+			statisticsWindow := self instantiate: PharoSharkStatisticsWindow.
+			model packetStatistics ifNotNil: [
+					statisticsWindow packetStatistics: model packetStatistics.
+					statisticsWindow open ] ]
 ]
 
 { #category : 'initialization' }
@@ -39,7 +41,6 @@ PharoSharkPresenter >> initializeLayout [
 	self layout: (SpBoxLayout newVertical
              add: topMenu expand: false ;
              add: packetsListWindow ;
-             add: inspectPacketSubwindow;
              spacing: 10;
              yourself)
 ]
@@ -67,8 +68,7 @@ PharoSharkPresenter >> instantiatePresenters [
 	openFileButton label: 'Open'."
 
 	topMenu := self instantiate: PharoSharkTopMenuPresenter.
-	packetsListWindow := self instantiate: SpListPresenter.
+	packetsListWindow := self instantiate: PharoSharkPacketListPresenter .
 	model := PharoSharkModel new.
 
-	inspectPacketSubwindow := self instantiate: SpNullPresenter
 ]
