@@ -17,6 +17,26 @@ Class {
 	#tag : 'Model'
 }
 
+{ #category : 'accessing' }
+PharoSharkTCPProtocol >> dstPort [
+	^ dstPort
+]
+
+{ #category : 'accessing' }
+PharoSharkTCPProtocol >> fieldsInfo [
+
+	^ {
+		  ('Source port: ' , srcPort asString).
+		  ('Destination port: ' , dstPort asString).
+		  ('Sequence: ' , seq asString).
+		  ('Acknowledge: ' , ack asString).
+		  ('Header length: ' , headerLength asString).
+		  ('Flags: 0b' , (flags printStringBase: 2)).
+		  ('Window: ' , window asString).
+		  ('Checksum: 0x' , (checksum printStringBase: 16)).
+		  ('Urgent: ' , urgentPtr asString) }
+]
+
 { #category : 'initialization' }
 PharoSharkTCPProtocol >> initializeFromStream: aStream [
 
@@ -31,4 +51,19 @@ PharoSharkTCPProtocol >> initializeFromStream: aStream [
 	urgentPtr := (aStream next: 2) asInteger.
 
 	^ true
+]
+
+{ #category : 'as yet unclassified' }
+PharoSharkTCPProtocol >> nextProtocol [
+	^ nil
+]
+
+{ #category : 'default' }
+PharoSharkTCPProtocol >> shortName [ 
+	^ 'TCP'
+]
+
+{ #category : 'accessing' }
+PharoSharkTCPProtocol >> srcPort [
+	^ srcPort 
 ]
