@@ -3,7 +3,9 @@ Class {
 	#superclass : 'SpPresenter',
 	#instVars : [
 		'parseFileCallaback',
-		'openFileButton'
+		'openFileButton',
+		'openStatisticsButton',
+		'openStatisticWindowCallback'
 	],
 	#category : 'PharoShark-Present',
 	#package : 'PharoShark',
@@ -16,7 +18,12 @@ PharoSharkTopMenuPresenter >> connectPresenters [
 	openFileButton action: [
 			parseFileCallaback ifNotNil: [
 					parseFileCallaback value:
-						((UIManager default chooseFullFileNameMatching: '*.pcap') ifNotNil: [ :path | path asFileReference ]) ] ]
+						((UIManager default chooseFullFileNameMatching: '*.pcap')
+							 ifNotNil: [ :path | path asFileReference ]) ] ].
+
+	openStatisticsButton action: [
+			openStatisticWindowCallback ifNotNil: [
+				openStatisticWindowCallback value ] ]
 ]
 
 { #category : 'initialization' }
@@ -24,6 +31,7 @@ PharoSharkTopMenuPresenter >> initializeLayout [
 
 	self layout: (SpBoxLayout newHorizontal
 			 add: openFileButton expand: false;
+			 add: openStatisticsButton expand: false;
 			 spacing: 10;
 			 yourself)
 ]
@@ -39,7 +47,15 @@ PharoSharkTopMenuPresenter >> initializePresenters [
 PharoSharkTopMenuPresenter >> instantiatePresenters [
 
 	openFileButton := self newButton.
-	openFileButton label: 'Open'
+	openFileButton label: 'Open'.
+	
+	openStatisticsButton := self newButton.
+	openStatisticsButton label: 'Staticstics'
+]
+
+{ #category : 'accessing' }
+PharoSharkTopMenuPresenter >> openStatisticWindowCallback: aCallback [
+	openStatisticWindowCallback := aCallback 
 ]
 
 { #category : 'initialization' }
