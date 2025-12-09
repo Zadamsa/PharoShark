@@ -12,6 +12,21 @@ Class {
 	#tag : 'Model'
 }
 
+{ #category : 'accessing' }
+PharoSharkUDPProtocol >> dstPort [ 
+	^ dstPort 
+]
+
+{ #category : 'accessing' }
+PharoSharkUDPProtocol >> fieldsInfo [
+
+	^ {
+		  ('Source port: ' , srcPort asString).
+		  ('Destination port: ' , dstPort asString).
+		  ('Length: ' , length asString).
+		  ('Checksum: ' , (checksum printStringBase: 16)) }
+]
+
 { #category : 'initialization' }
 PharoSharkUDPProtocol >> initializeFromStream: aStream [
 
@@ -21,4 +36,19 @@ PharoSharkUDPProtocol >> initializeFromStream: aStream [
 	checksum := (aStream next: 2) reversed asInteger.
 
 	^ true
+]
+
+{ #category : 'as yet unclassified' }
+PharoSharkUDPProtocol >> nextProtocol [
+	^ nil
+]
+
+{ #category : 'default' }
+PharoSharkUDPProtocol >> shortName [ 
+	^ 'UDP'
+]
+
+{ #category : 'accessing' }
+PharoSharkUDPProtocol >> srcPort [ 
+	^ srcPort 
 ]
