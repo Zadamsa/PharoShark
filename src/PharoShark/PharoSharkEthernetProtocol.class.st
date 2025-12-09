@@ -34,6 +34,21 @@ PharoSharkEthernetProtocol class >> vlanType [
 	^ 16r8100
 ]
 
+{ #category : 'as yet unclassified' }
+PharoSharkEthernetProtocol >> dstIP [
+
+	nextProtocol ifNil: [ ^ 'No' ] ifNotNil: [ ^ nextProtocol dstIP ]
+]
+
+{ #category : 'accessing' }
+PharoSharkEthernetProtocol >> fieldsInfo [
+
+	^ {
+		  ('Source MAC address: ' , (self class macToString: srcMac)).
+		  ('Destination MAC address:' , (self class macToString: dstMac)) .
+			('VLAN id: ' , (vlan ifNil: [ 'Not presented' ] ifNotNil: [ (vlan bitAnd: 16r0FFF) asString ] ))}
+]
+
 { #category : 'initialization' }
 PharoSharkEthernetProtocol >> initializeFromStream: aStream [
 
@@ -50,4 +65,20 @@ PharoSharkEthernetProtocol >> initializeFromStream: aStream [
 			vlan := (aStream next: 2) reversed asInteger ].
 	aStream atEnd ifTrue: [ ^ false ].
 	^ true
+]
+
+{ #category : 'as yet unclassified' }
+PharoSharkEthernetProtocol >> nextProtocol [
+	^ nextProtocol 
+]
+
+{ #category : 'default' }
+PharoSharkEthernetProtocol >> shortName [ 
+	^ 'Ethernet'
+]
+
+{ #category : 'as yet unclassified' }
+PharoSharkEthernetProtocol >> srcIP [
+
+	nextProtocol ifNil: [ ^ 'No' ] ifNotNil: [ ^ nextProtocol srcIP ]
 ]
