@@ -2,39 +2,66 @@ Class {
 	#name : 'PharoSharkModel',
 	#superclass : 'Object',
 	#instVars : [
-		'packets'
+		'packetStatistics',
+		'statistics'
 	],
 	#category : 'PharoShark-Model',
 	#package : 'PharoShark',
 	#tag : 'Model'
 }
 
-{ #category : 'initialization' }
-PharoSharkModel >> initialize [ 
-	packets :=  #(10 20 30) "OrderedCollection new".
+{ #category : 'as yet unclassified' }
+PharoSharkModel class >> validateHeader: aHeader [
+
+	aHeader ifNil: [ ^ #( #error 'Failed to read header from file!' ) ].
+	aHeader magicNumber = 16rA1B2C3D4 ifFalse: [
+		^ #( #error 'Invalid magic number found!' ) ].
+	aHeader major = 2 ifFalse: [
+		^ #( #error 'Unsupported major version '
+		     #, header major #, '!' ) ].
+	aHeader minor = 4 ifFalse: [
+		^ #( #error 'Unsupported minor version!' ) ].
+	aHeader etherType = 1 ifFalse: [
+		^ #( #error 'Unsupported error type!' ) ].
+	^ nil
+]
+
+{ #category : 'as yet unclassified' }
+PharoSharkModel >> calculateStatistics: aPackets [
+	^ PharoSharkStatistics calculateFor: aPackets 
 ]
 
 { #category : 'accessing' }
-PharoSharkModel >> packets [
-
-	^ packets
+PharoSharkModel >> packetStatistics [ 
+	^ packetStatistics
 ]
 
 { #category : 'parsing' }
 PharoSharkModel >> parseFile: aFile [
 
-	| parsedPackets packet header stream|
+	| parsedPackets packet header stream baseTs |
+	aFile ifNil: [ ^ #( #cancel ) ].
+	baseTs := nil.
 	parsedPackets := OrderedCollection new.
-	stream := aFile binaryReadStream .
-	header := PharoSharkPcapHeader parseStream: stream .
-	header ifNil: [ ^ #( #error 'Failed to read header from file!' ) ].
-	header magicNumber = 16rA1B2C3D4 ifFalse: [ ^ #( #error 'Invalid magic number found!') ].
-	header major = 2 ifFalse: [ ^ #( #error 'Unsupported major version ', header major , '!') ].
-	header minor = 4 ifFalse: [ ^ #( #error 'Unsupported minor version!') ].
-	header etherType = 1 ifFalse: [ ^ #( #error 'Unsupported error type!') ].
+	stream := aFile binaryReadStream.
+	header := PharoSharkPcapHeader parseStream: stream.
+	(self class validateHeader: header) ifNotNil: [ :error | ^ error ].
 
-	[ packet := PharoSharkPacket parseStream: stream ]
-		whileNotNil: [ parsedPackets append: packet ].
-		
-	^ #( #success parsedPackets )
+
+	[
+		stream atEnd ifTrue: [
+				packetStatistics := PharoSharkStatistics calculateFor: parsedPackets.
+				^ {
+					  #success.
+					  parsedPackets } ].
+		packet := PharoSharkPacket parseStream: stream ] whileNotNil: [
+			baseTs ifNil: [ baseTs := packet tsUsec ].
+			packet relativeIndex: parsedPackets size.
+			packet relativeTs: packet tsUsec - baseTs.
+			parsedPackets add: packet ].
+
+	packetStatistics := PharoSharkStatistics calculateFor: parsedPackets.
+	^ {
+		  #success.
+		  parsedPackets }
 ]
