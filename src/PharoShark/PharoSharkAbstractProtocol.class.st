@@ -15,7 +15,30 @@ PharoSharkAbstractProtocol class >> parseStream: aStream [
 	^ parsedProtocol
 ]
 
+{ #category : 'comparing' }
+PharoSharkAbstractProtocol >> contains: aProtocolName [
+
+	aProtocolName == self shortName ifTrue: [ ^ true ].
+	self nextProtocol ifNil: [ ^ false ].
+	^ self nextProtocol contains: aProtocolName
+]
+
+{ #category : 'accessing' }
+PharoSharkAbstractProtocol >> fieldsInfo [
+	self subclassResponsibility 
+]
+
 { #category : 'initialization' }
 PharoSharkAbstractProtocol >> initializeFromStream: aStream [
+	self subclassResponsibility 
+]
+
+{ #category : 'as yet unclassified' }
+PharoSharkAbstractProtocol >> nextProtocol [
+	self subclassResponsibility 
+]
+
+{ #category : 'default' }
+PharoSharkAbstractProtocol >> shortName [
 	self subclassResponsibility 
 ]
