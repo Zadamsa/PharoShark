@@ -13,6 +13,7 @@ Class {
 		'srcIP',
 		'dstIP',
 		'options',
+		'protocolNumber',
 		'nextProtocol'
 	],
 	#category : 'PharoShark-Model',
@@ -40,10 +41,36 @@ PharoSharkIP4Protocol class >> udpType [
 	^ 17
 ]
 
+{ #category : 'accessing' }
+PharoSharkIP4Protocol >> dstIP [
+
+	^ (dstIP inject: '' into: [ :acc :b | acc , b asString , '.']) allButLast .
+
+	"
+	^ '.' join: (dstIP collect: [ :b | b asString ])"
+]
+
+{ #category : 'accessing' }
+PharoSharkIP4Protocol >> fieldsInfo [
+
+	^ {
+		  ('IP version: ' , version asString).
+		  ('IP header length: ' , headerLength asString).
+		  ('Total length: ' , totalLength asString).
+		  ('ID: ' , id asString).
+		  ('IP flags: 0b' , (flags printStringBase: 2)).
+		  ('TTL: ' , timeToLive asString).
+		  ('Protocol: ' , protocolNumber asString).
+		  ('Checksum: 0x' , (checksum printStringBase: 16)).
+		  ('Source address: ' , self srcIP).
+		  ('Destination address: ' , self dstIP)
+		  "options ?? ." }
+]
+
 { #category : 'initialization' }
 PharoSharkIP4Protocol >> initializeFromStream: aStream [
 
-	| firstByte optionsLength nextType |
+	| firstByte optionsLength |
 	firstByte := aStream next.
 
 	version := firstByte >> 4.
@@ -60,7 +87,7 @@ PharoSharkIP4Protocol >> initializeFromStream: aStream [
 	flags := (aStream next: 2) reversed asInteger.
 
 	timeToLive := aStream next.
-	nextType := aStream next.
+	protocolNumber := aStream next.
 
 	checksum := (aStream next: 2) asInteger.
 
@@ -72,7 +99,7 @@ PharoSharkIP4Protocol >> initializeFromStream: aStream [
 	optionsLength := headerLength - 20.
 	aStream skip: optionsLength.
 	
-	^ self intializeSuccessorFromStream: aStream nextType: nextType
+	^ self intializeSuccessorFromStream: aStream nextType: protocolNumber
 ]
 
 { #category : 'as yet unclassified' }
@@ -90,4 +117,26 @@ PharoSharkIP4Protocol >> intializeSuccessorFromStream: aStream nextType: aNextTy
 	aNextType = self class icmp6Type ifTrue: [
 		nextProtocol := PharoSharkICMP6Protocol parseStream: aStream ].
 	^ true
+]
+
+{ #category : 'as yet unclassified' }
+PharoSharkIP4Protocol >> nextProtocol [
+	^ nextProtocol 
+]
+
+{ #category : 'as yet unclassified' }
+PharoSharkIP4Protocol >> protocolNumber [
+	^ protocolNumber 
+]
+
+{ #category : 'default' }
+PharoSharkIP4Protocol >> shortName [ 
+	^ 'IPv4'
+]
+
+{ #category : 'accessing' }
+PharoSharkIP4Protocol >> srcIP [
+
+
+	^ (srcIP inject: '' into: [ :acc :b | acc , b asString , '.' ]) allButLast .
 ]
