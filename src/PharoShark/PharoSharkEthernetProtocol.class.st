@@ -22,11 +22,11 @@ PharoSharkEthernetProtocol class >> ip6Type [
 	^ 16r86DD
 ]
 
-{ #category : 'parsing' }
-PharoSharkEthernetProtocol class >> parseStream: aStream [
-	| ethernetLayer |
-	ethernetLayer := self new. 
-	(ethernetLayer initializeFromStream: aStream) ifFalse: [ ^ nil ].
+{ #category : 'as yet unclassified' }
+PharoSharkEthernetProtocol class >> macToString: aMac [
+
+	^ ':' join: (aMac asArray collect: [ :each |
+			   (each printStringBase: 16) padLeftTo: 2 with: $0 ])
 ]
 
 { #category : 'as yet unclassified' }
