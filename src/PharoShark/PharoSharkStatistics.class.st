@@ -27,20 +27,6 @@ PharoSharkStatistics class >> calculateFor: aPackets [
 ]
 
 { #category : 'as yet unclassified' }
-PharoSharkStatistics >> calculateRatios [
-	| packetsTotal |
-	packetProtocols at: 'TCP' ifAbsent: 0.
-	packetProtocols at: 'UDP' ifAbsent: 0.
-	packetProtocols at: 'ICMPv6' ifAbsent: 0.
-	packetProtocols at: 'ICMP' ifAbsent: 0.
-	packetProtocols at: 'IPv4' ifAbsent: 0.
-	packetProtocols at: 'IPv6' ifAbsent: 0.
-	
-	packetsTotal := packetProtocols values inject: 0 into: [ :acc :val | acc + val ].
-
-]
-
-{ #category : 'as yet unclassified' }
 PharoSharkStatistics >> calculateRatios: aPackets [
 
 	ip4Ratio := (aPackets count: [ :packet | packet contains: 'IPv4' ])
@@ -94,9 +80,7 @@ PharoSharkStatistics >> initializeFrom: aPackets [
 
 	aPackets do: [ :packet | self updatePacketData: packet ].
 
-	packetProtocols := (aPackets collect: #highestParsedProtocol)
-		                   shortName.
-	self calculateRatios
+	self calculateRatios: aPackets.
 ]
 
 { #category : 'accessing' }
@@ -147,10 +131,10 @@ PharoSharkStatistics >> updatePacketData: aPacket [
 		at: aPacket flowKey
 		put: (flowByteLengths at: aPacket flowKey) + aPacket realLength.
 
-	packetProtocols at: aPacket highestParsedProtocol ifAbsentPut: [ 0 ].
+	packetProtocols at: aPacket highestParsedProtocol shortName ifAbsentPut: [ 0 ].
 	packetProtocols
-		at: aPacket highestParsedProtocol
-		put: (packetProtocols at: aPacket highestParsedProtocol) + 1.
+		at: aPacket highestParsedProtocol shortName
+		put: (packetProtocols at: aPacket highestParsedProtocol shortName) + 1.
 
 	flowProtocols
 		at: aPacket flowKey
@@ -158,10 +142,10 @@ PharoSharkStatistics >> updatePacketData: aPacket [
 
 	self updatePortData: aPacket.
 
-	packetProtocols at: aPacket highestParsedProtocol ifAbsentPut: [ 0 ].
+	"packetProtocols at: aPacket highestParsedProtocol ifAbsentPut: [ 0 ].
 	packetProtocols
 		at: aPacket highestParsedProtocol
-		put: (packetProtocols at: aPacket highestParsedProtocol) + 1
+		put: (packetProtocols at: aPacket highestParsedProtocol) + 1"
 ]
 
 { #category : 'as yet unclassified' }
