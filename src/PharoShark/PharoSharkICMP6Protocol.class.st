@@ -15,21 +15,24 @@ Class {
 	#tag : 'Model'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'parsing' }
 PharoSharkICMP6Protocol class >> minimalHeaderSize [ 
 	"type u8 + code u8 + checksum u16 + body u32"
 	^  8
 ]
 
 { #category : 'accessing' }
-PharoSharkICMP6Protocol >> checksum [ 
-	^ checksum 
+PharoSharkICMP6Protocol >> checksum [
+	"Returns ICMPv6 checksum of this packet"
+
+	^ checksum
 ]
 
 { #category : 'accessing' }
-PharoSharkICMP6Protocol >> code [ 
-	^ code  
-	
+PharoSharkICMP6Protocol >> code [
+	"Returns code of this ICMPv6 packet."
+
+	^ code
 ]
 
 { #category : 'accessing' }
@@ -52,18 +55,22 @@ PharoSharkICMP6Protocol >> initializeFromStream: aStream [
 	^ true
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 PharoSharkICMP6Protocol >> nextProtocol [
-	^ nil 
+	"ICMPv6 can't hold inner protocols."
+
+	^ nil
 ]
 
-{ #category : 'default' }
-PharoSharkICMP6Protocol >> shortName [ 
+{ #category : 'accessing' }
+PharoSharkICMP6Protocol >> shortName [
+
 	^ 'ICMPv6'
 ]
 
 { #category : 'accessing' }
 PharoSharkICMP6Protocol >> type [ 
+	"Returns type of this ICMPv6 message."
 	^ type
 	
 ]

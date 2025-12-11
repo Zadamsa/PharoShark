@@ -42,10 +42,10 @@ PharoSharkPresenter >> connectPresenters [
 PharoSharkPresenter >> initializeLayout [
 
 	self layout: (SpBoxLayout newVertical
-             add: topMenu expand: false ;
-             add: packetsListWindow ;
-             spacing: 10;
-             yourself)
+			 add: topMenu expand: false;
+			 add: packetsListWindow;
+			 spacing: 10;
+			 yourself)
 ]
 
 { #category : 'initialization' }
@@ -58,20 +58,15 @@ PharoSharkPresenter >> initializePresenters [
 { #category : 'initialization' }
 PharoSharkPresenter >> initializeWindow: aWindowPresenter [
 
-    aWindowPresenter
-        title: 'PharoShark';
-        initialExtent: 1280 @ 640
+	aWindowPresenter
+		title: 'PharoShark';
+		initialExtent: 1280 @ 640
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'initialization' }
 PharoSharkPresenter >> instantiatePresenters [
-	"Task List button to (re)open PCAP"
-
-	"openFileButton := self newButton.
-	openFileButton label: 'Open'."
 
 	topMenu := self instantiate: PharoSharkTopMenuPresenter.
-	packetsListWindow := self instantiate: PharoSharkPacketListPresenter .
-	model := PharoSharkModel new.
-
+	packetsListWindow := self instantiate: PharoSharkPacketListPresenter.
+	model := PharoSharkModel new
 ]

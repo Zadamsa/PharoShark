@@ -47,7 +47,7 @@ PharoSharkTopMenuPresenter >> initializePresenters [
 	self initializeLayout
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'initialization' }
 PharoSharkTopMenuPresenter >> instantiatePresenters [
 
 	openFileButton := self newButton.
@@ -65,5 +65,6 @@ PharoSharkTopMenuPresenter >> openStatisticWindowCallback: aCallback [
 
 { #category : 'initialization' }
 PharoSharkTopMenuPresenter >> parseFileCallaback: aCallback [
-	parseFileCallaback := aCallback 
+
+	parseFileCallaback := aCallback
 ]

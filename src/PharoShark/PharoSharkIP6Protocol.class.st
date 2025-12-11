@@ -20,7 +20,7 @@ Class {
 	#tag : 'Model'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'parsing' }
 PharoSharkIP6Protocol class >> minimalHeaderSize [ 
 	"Minimal possible IPv6 header size from specification"
 	^  40
@@ -108,7 +108,7 @@ PharoSharkIP6Protocol >> protocolNumber [
 	^ protocolNumber 
 ]
 
-{ #category : 'default' }
+{ #category : 'accessing' }
 PharoSharkIP6Protocol >> shortName [ 
 	^ 'IPv6'
 ]

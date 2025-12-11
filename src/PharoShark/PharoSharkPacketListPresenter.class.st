@@ -15,7 +15,7 @@ Class {
 	#tag : 'Present'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'gui' }
 PharoSharkPacketListPresenter class >> makeColumns [
 
 	| idColumn flowKeyColumn relativeTimeColumn sourceColumn destinationColumn protocolColumn lengthColumn |
@@ -88,7 +88,7 @@ PharoSharkPacketListPresenter >> initializeLayout [
 
 	self layout: (SpBoxLayout newVertical
 			 add: packetsList;
-			 add: inspectPacketSubwindow ;
+			 add: inspectPacketSubwindow;
 			 spacing: 10;
 			 yourself)
 ]
@@ -100,7 +100,7 @@ PharoSharkPacketListPresenter >> initializePresenters [
 	self initializeLayout
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'initialization' }
 PharoSharkPacketListPresenter >> instantiatePresenters [
 
 	packetsList := self instantiate: SpTablePresenter new.
@@ -114,5 +114,6 @@ PharoSharkPacketListPresenter >> instantiatePresenters [
 
 { #category : 'accessing' }
 PharoSharkPacketListPresenter >> packets: aPackets [
-	packetsList items: aPackets. 
+
+	packetsList items: aPackets
 ]

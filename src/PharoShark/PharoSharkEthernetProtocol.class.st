@@ -84,7 +84,7 @@ PharoSharkEthernetProtocol >> nextProtocol [
 	^ nextProtocol 
 ]
 
-{ #category : 'default' }
+{ #category : 'accessing' }
 PharoSharkEthernetProtocol >> shortName [ 
 	^ 'Ethernet'
 ]

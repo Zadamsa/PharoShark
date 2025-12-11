@@ -17,7 +17,7 @@ Class {
 	#tag : 'Present'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'gui' }
 PharoSharkStatisticsWindow class >> buildBarPlotFromDictionary: aDictionary title: aTitle [
 
 	| xValues yValues plot |
@@ -34,7 +34,7 @@ PharoSharkStatisticsWindow class >> buildBarPlotFromDictionary: aDictionary titl
 	^ plot asPresenter
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'gui' }
 PharoSharkStatisticsWindow class >> buildHistogramFromArray: anArray title: aTitle [
 
 	anArray size <= 1 ifTrue: [
@@ -45,7 +45,7 @@ PharoSharkStatisticsWindow class >> buildHistogramFromArray: anArray title: aTit
 		   yourself) asPresenter
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'gui' }
 PharoSharkStatisticsWindow class >> buildHistogramFromDictionary: aDictionary title: aTitle [
 
 	aDictionary size <= 1 ifTrue: [
@@ -56,7 +56,7 @@ PharoSharkStatisticsWindow class >> buildHistogramFromDictionary: aDictionary ti
 		   yourself) asPresenter
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'gui' }
 PharoSharkStatisticsWindow class >> buildHistogramFromDictionaryValues: aDictionary title: aTitle [
 
 	^ self
@@ -65,7 +65,7 @@ PharoSharkStatisticsWindow class >> buildHistogramFromDictionaryValues: aDiction
 		  title: aTitle
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'gui' }
 PharoSharkStatisticsWindow class >> createProtocolStatisticsText: aStatistics [
 
 	| packetsTotal flowsTotal strings |
@@ -88,7 +88,7 @@ PharoSharkStatisticsWindow class >> createProtocolStatisticsText: aStatistics [
 	^ String cr join: strings
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'gui' }
 PharoSharkStatisticsWindow class >> createRatioStatisticsText: aStatistics [
 
 	^ String cr join: {
@@ -135,7 +135,7 @@ PharoSharkStatisticsWindow >> initializePresenters [
 	self initializeLayout
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'initialization' }
 PharoSharkStatisticsWindow >> instantiatePresenters [
 
 	packetLengthHistogram := self instantiate: SpNullPresenter.
@@ -146,7 +146,7 @@ PharoSharkStatisticsWindow >> instantiatePresenters [
 	textStatisticsWindow := self instantiate: SpNullPresenter
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'sette' }
 PharoSharkStatisticsWindow >> packetStatistics: aStatistics [
 
 	packetLengthHistogram := self class
@@ -162,7 +162,7 @@ PharoSharkStatisticsWindow >> packetStatistics: aStatistics [
 		                            aStatistics flowByteLengths
 		                            title: 'Flow length histogram(bytes)'.
 	packetPortsHistogram := self class
-		                        buildBarPlotFromDictionary: 
+		                        buildBarPlotFromDictionary:
 		                        aStatistics packetPorts
 		                        title: 'Ports frequence histogram'.
 

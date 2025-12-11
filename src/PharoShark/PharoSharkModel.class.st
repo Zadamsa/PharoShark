@@ -31,11 +31,14 @@ PharoSharkModel class >> validateHeader: aHeader [
 
 { #category : 'calc' }
 PharoSharkModel >> calculateStatistics: aPackets [
-	^ PharoSharkStatistics calculateFor: aPackets 
+
+	^ PharoSharkStatistics calculateFor: aPackets
 ]
 
 { #category : 'accessing' }
-PharoSharkModel >> packetStatistics [ 
+PharoSharkModel >> packetStatistics [
+	"Returns calculated PCAP statistics."
+
 	^ packetStatistics
 ]
 
@@ -53,7 +56,8 @@ PharoSharkModel >> parseFile: aFile [
 
 	[
 		stream atEnd ifTrue: [
-				packetStatistics := PharoSharkStatistics calculateFor: parsedPackets.
+				packetStatistics := PharoSharkStatistics calculateFor:
+					                    parsedPackets.
 				^ {
 					  #success.
 					  parsedPackets } ].

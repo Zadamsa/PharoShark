@@ -15,20 +15,24 @@ Class {
 	#tag : 'Model'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'parsing' }
 PharoSharkICMPProtocol class >> minimalHeaderSize [ 
 	"type u8 + code u8 + checksum u16 + body u32"
 	^  8
 ]
 
 { #category : 'accessing' }
-PharoSharkICMPProtocol >> checksum [ 
-	^ checksum 
+PharoSharkICMPProtocol >> checksum [
+	"Returns ICMP checksum of this packet"
+
+	^ checksum
 ]
 
 { #category : 'accessing' }
-PharoSharkICMPProtocol >> code [ 
-	^ code 
+PharoSharkICMPProtocol >> code [
+	"Returns code of this ICMP packet."
+
+	^ code
 ]
 
 { #category : 'accessing' }
@@ -53,15 +57,20 @@ PharoSharkICMPProtocol >> initializeFromStream: aStream [
 
 { #category : 'accessing' }
 PharoSharkICMPProtocol >> nextProtocol [
+	"ICMP cant hold inner protocols."
+
 	^ nil
 ]
 
-{ #category : 'default' }
-PharoSharkICMPProtocol >> shortName [ 
+{ #category : 'accessing' }
+PharoSharkICMPProtocol >> shortName [
+
 	^ 'ICMP'
 ]
 
 { #category : 'accessing' }
 PharoSharkICMPProtocol >> type [
-	^ type 
+	"Returns type of this ICMP message."
+
+	^ type
 ]

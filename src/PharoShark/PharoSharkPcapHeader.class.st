@@ -44,7 +44,9 @@ PharoSharkPcapHeader class >> parseStream: aStream [
 
 { #category : 'accessing' }
 PharoSharkPcapHeader >> etherType [
-	^ etherType 
+	"Returns ethernet type used by this PCAP file."
+
+	^ etherType
 ]
 
 { #category : 'instance creation' }
@@ -61,25 +63,35 @@ PharoSharkPcapHeader >> initializeWithMagic: aMagicNumber versionMajor: aMajor v
 
 { #category : 'accessing' }
 PharoSharkPcapHeader >> magicNumber [
-	^ magicNumber 
+	"Returns magic number from PCAP file header."
+
+	^ magicNumber
 ]
 
 { #category : 'accessing' }
 PharoSharkPcapHeader >> major [
-	^ major 
+	"Returns major number of PCAP file."
+
+	^ major
 ]
 
 { #category : 'accessing' }
 PharoSharkPcapHeader >> maxSnapshotLength [
-	^ maxSnapshotLength 
+	"Returns maximal snapshot length from PCAP file header."
+
+	^ maxSnapshotLength
 ]
 
 { #category : 'accessing' }
 PharoSharkPcapHeader >> minor [
+	"Return the minor version from PCAP file header."
+
 	^ minor
 ]
 
 { #category : 'accessing' }
 PharoSharkPcapHeader >> timeZone [
-	^ timeZone 
+	"Returns timezone from the PCAP file header."
+
+	^ timeZone
 ]

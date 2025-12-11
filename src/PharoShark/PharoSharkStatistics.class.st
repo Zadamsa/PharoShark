@@ -44,6 +44,7 @@ PharoSharkStatistics class >> dictionaryToValueFrequencyDictionary: aDictionary 
 
 { #category : 'calcu' }
 PharoSharkStatistics >> calculateRatios: aPackets [
+	"Calculates protocol ratios of given packets."
 
 	ip4Ratio := (aPackets count: [ :packet | packet contains: 'IPv4' ])
 		            asFloat / aPackets size.
@@ -61,26 +62,36 @@ PharoSharkStatistics >> calculateRatios: aPackets [
 
 { #category : 'accessing' }
 PharoSharkStatistics >> flowByteLengths [
+	"Returns dictionary of flowKey->total count of bytes in this flow."
+
 	^ flowByteLengths
 ]
 
 { #category : 'accessing' }
 PharoSharkStatistics >> flowPacketLengths [
+	"Returns dictionary of flowKey->count of packets in this flow."
+
 	^ flowPacketLengths
 ]
 
 { #category : 'accessing' }
 PharoSharkStatistics >> flowProtocols [
+	"Returns dictionary of protocol short name -> count of flows with this protocol as highest."
+
 	^ flowProtocols
 ]
 
 { #category : 'accessing' }
 PharoSharkStatistics >> icmp6Ratio [
+	"Returns ratio of ICMPv6 packets."
+
 	^ icmp6Ratio
 ]
 
 { #category : 'accessing' }
 PharoSharkStatistics >> icmpRatio [
+	"Returns ratio of ICMP packets."
+
 	^ icmpRatio
 ]
 
@@ -103,17 +114,23 @@ PharoSharkStatistics >> initializeFrom: aPackets [
 
 { #category : 'accessing' }
 PharoSharkStatistics >> ip4Ratio [
+	"Returns ratio of IPv4 packets."
+
 	^ ip4Ratio
 ]
 
 { #category : 'accessing' }
 PharoSharkStatistics >> ip6Ratio [
+	"Returns ratio of IPv6 packets."
+
 	^ ip6Ratio
 ]
 
 { #category : 'accessing' }
 PharoSharkStatistics >> packetLengths [
-	^ packetLengths 
+	"Returns array of packet lengths in original order."
+
+	^ packetLengths
 ]
 
 { #category : 'accessing' }
@@ -123,16 +140,22 @@ PharoSharkStatistics >> packetPorts [
 
 { #category : 'accessing' }
 PharoSharkStatistics >> packetProtocols [
+	"Returns dictionary of protocol short name -> count of packets with this protocol as highest."
+
 	^ packetProtocols
 ]
 
 { #category : 'accessing' }
 PharoSharkStatistics >> tcpRatio [
+	"Returns ratio of TCP packets."
+
 	^ tcpRatio
 ]
 
 { #category : 'accessing' }
 PharoSharkStatistics >> udpRatio [
+	"Returns ratio of UDP packets."
+
 	^ udpRatio
 ]
 

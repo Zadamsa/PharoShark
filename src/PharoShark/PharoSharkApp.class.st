@@ -9,13 +9,8 @@ Class {
 	#tag : 'Present'
 }
 
-{ #category : 'as yet unclassified' }
-PharoSharkApp >> defaultPresenter [
-    "^ PharoSharkPresenter"
-
-]
-
 { #category : 'running' }
 PharoSharkApp >> start [
+
 	(self new: PharoSharkPresenter) open
 ]

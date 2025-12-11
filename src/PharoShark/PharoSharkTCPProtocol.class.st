@@ -20,14 +20,16 @@ Class {
 	#tag : 'Model'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'parsing' }
 PharoSharkTCPProtocol class >> minimalHeaderSize [ 
 	"Minimal possible TCP header size from specification"
 	^  20
 ]
 
 { #category : 'accessing' }
-PharoSharkTCPProtocol >> acknowledgment [ 
+PharoSharkTCPProtocol >> acknowledgment [
+	"Returns acknoweledgement of this TCP packet."
+
 	^ ack
 ]
 
@@ -38,6 +40,8 @@ PharoSharkTCPProtocol >> checksum [
 
 { #category : 'accessing' }
 PharoSharkTCPProtocol >> dstPort [
+	"Returns destination port of this TCP packet."
+
 	^ dstPort
 ]
 
@@ -57,8 +61,10 @@ PharoSharkTCPProtocol >> fieldsInfo [
 ]
 
 { #category : 'accessing' }
-PharoSharkTCPProtocol >> flags [ 
-	^ flags 
+PharoSharkTCPProtocol >> flags [
+	"Returns TCP flags of this packet."
+
+	^ flags
 ]
 
 { #category : 'initialization' }
@@ -79,25 +85,33 @@ PharoSharkTCPProtocol >> initializeFromStream: aStream [
 
 { #category : 'accessing' }
 PharoSharkTCPProtocol >> nextProtocol [
+
 	^ nil
 ]
 
 { #category : 'accessing' }
-PharoSharkTCPProtocol >> sequence [ 
+PharoSharkTCPProtocol >> sequence [
+	"Returns sequence number of this TCP packet."
+
 	^ seq
 ]
 
-{ #category : 'default' }
-PharoSharkTCPProtocol >> shortName [ 
+{ #category : 'accessing' }
+PharoSharkTCPProtocol >> shortName [
+
 	^ 'TCP'
 ]
 
 { #category : 'accessing' }
 PharoSharkTCPProtocol >> srcPort [
-	^ srcPort 
+	"Returns source port of this TCP packet."
+
+	^ srcPort
 ]
 
 { #category : 'accessing' }
-PharoSharkTCPProtocol >> window [ 
-	^ window 
+PharoSharkTCPProtocol >> window [
+	"Returns TCP window of this packet."
+
+	^ window
 ]

@@ -12,14 +12,6 @@ Class {
 	#tag : 'Present'
 }
 
-{ #category : 'converting' }
-PharoSharkPacketNode >> asPresenterOn: aBuilder [
-    ^ SpLabelPresenter new
-        label: self displayString;
-        yourself.
-
-]
-
 { #category : 'accessing' }
 PharoSharkPacketNode >> children [
 
@@ -41,14 +33,6 @@ PharoSharkPacketNode >> displayString [
 
 { #category : 'accessing' }
 PharoSharkPacketNode >> packet: aPacket [
-    packet := aPacket.
-]
 
-{ #category : 'accessing' }
-PharoSharkPacketNode >> textStyle [
-    ^ SpTextStyle new
-        fontName: 'Arial';
-        pointSize: 132;
-        yourself.
-
+	packet := aPacket
 ]

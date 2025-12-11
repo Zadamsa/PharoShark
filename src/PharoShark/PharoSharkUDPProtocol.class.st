@@ -15,20 +15,24 @@ Class {
 	#tag : 'Model'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'parsing' }
 PharoSharkUDPProtocol class >> minimalHeaderSize [ 
 	"Minimal possible UDP header size from specification"
 	^  8
 ]
 
 { #category : 'accessing' }
-PharoSharkUDPProtocol >> checksum [ 
-	^ checksum 
+PharoSharkUDPProtocol >> checksum [
+	"Returns checksum of this UDP packet."
+
+	^ checksum
 ]
 
 { #category : 'accessing' }
-PharoSharkUDPProtocol >> dstPort [ 
-	^ dstPort 
+PharoSharkUDPProtocol >> dstPort [
+	"Returns destination port of this packet."
+
+	^ dstPort
 ]
 
 { #category : 'accessing' }
@@ -54,15 +58,18 @@ PharoSharkUDPProtocol >> initializeFromStream: aStream [
 
 { #category : 'accessing' }
 PharoSharkUDPProtocol >> nextProtocol [
+
 	^ nil
 ]
 
-{ #category : 'default' }
-PharoSharkUDPProtocol >> shortName [ 
+{ #category : 'accessing' }
+PharoSharkUDPProtocol >> shortName [
+
 	^ 'UDP'
 ]
 
 { #category : 'accessing' }
-PharoSharkUDPProtocol >> srcPort [ 
-	^ srcPort 
+PharoSharkUDPProtocol >> srcPort [
+
+	^ srcPort
 ]

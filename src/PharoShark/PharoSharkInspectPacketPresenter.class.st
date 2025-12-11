@@ -14,26 +14,9 @@ Class {
 }
 
 { #category : 'initialization' }
-PharoSharkInspectPacketPresenter >> connectPresenters [
-"
-	inspectedPacket
-		whenSelectedDo: [ :selectedPacket | ]
-"		
-]
-
-{ #category : 'defaults' }
-PharoSharkInspectPacketPresenter >> defaultTextStyle [
-    ^ SpTextStyle new
-        fontName: 'Courier';
-        pointSize: 12;
-        yourself.
-
-]
-
-{ #category : 'initialization' }
 PharoSharkInspectPacketPresenter >> initializeLayout [
 
-	self layout: (SpBoxLayout newHorizontal 
+	self layout: (SpBoxLayout newHorizontal
 			 add: inspectedPacket;
 			 add: rawBytes;
 			 spacing: 10;
@@ -56,7 +39,7 @@ PharoSharkInspectPacketPresenter >> inspectedPacket: aPacket [
 				  (each printStringBase: 16) padLeftTo: 2 with: $0 ]))
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'initialization' }
 PharoSharkInspectPacketPresenter >> instantiatePresenters [
 
 	inspectedPacket := self instantiate: SpTreePresenter.

@@ -19,13 +19,13 @@ Class {
 	#tag : 'Model'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'parsing' }
 PharoSharkPacket class >> minimalHeaderSize [ 
 	"tsSec u32 + tsUsec u32 + captured length u32 + on-wire length u32"
 	^  16
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'formatt' }
 PharoSharkPacket class >> usecTsToString: aTs [
 
 	| usecToSec |
@@ -38,6 +38,7 @@ PharoSharkPacket class >> usecTsToString: aTs [
 
 { #category : 'accessing' }
 PharoSharkPacket >> calculateHash [
+	"Calculates (probably) unique flow ID for given packet. Identifies packets that belong to same flow - same src and dst IP addresses, same ports, same IP protocol value. Packets both from A->B and B->A belongs to the same flow."
 
 	| portHash ipProtocol |
 	"No ethernet layer - No hash"
@@ -59,17 +60,8 @@ PharoSharkPacket >> calculateHash [
 ]
 
 { #category : 'accessing' }
-PharoSharkPacket >> children [
-	^ { }
-]
-
-{ #category : 'displaying' }
-PharoSharkPacket >> displayString [
-	^ 'Captured packet:'
-]
-
-{ #category : 'accessing' }
 PharoSharkPacket >> dstIP [
+	"Returns destination IP as a string. IPv4 or IPv6 formatted, - if no IP layer."
 
 	ethernetProtocol
 		ifNil: [ ^ '-' ]
@@ -86,11 +78,14 @@ PharoSharkPacket >> fieldsInfo [
 
 { #category : 'accessing' }
 PharoSharkPacket >> flowKey [
-	^ flowKey 
+	"Returns the flow key of this packet. The result of calculation _calculateHash_."
+
+	^ flowKey
 ]
 
 { #category : 'accessing' }
 PharoSharkPacket >> highestParsedProtocol [
+	"Return the most inner sucessfully parsed protocol of this packet."
 
 	| protocol |
 	ethernetProtocol ifNil: [ ^ nil ].
@@ -103,7 +98,7 @@ PharoSharkPacket >> highestParsedProtocol [
 { #category : 'initialization' }
 PharoSharkPacket >> initializeFromStream: aStream [
 
-	| savedPos tsSec x |
+	| savedPos tsSec |
 	tsSec := (aStream next: 4) reversed asInteger.
 	tsUsec := (aStream next: 4) reversed asInteger + (tsSec * 1_000_000).
 	presentLength := (aStream next: 4) reversed asInteger.
@@ -128,46 +123,62 @@ PharoSharkPacket >> nextProtocol [
 
 { #category : 'accessing' }
 PharoSharkPacket >> presentLength [
-	^ presentLength 
+	"Returns captured length of the packet(part of the payload that was saved to the file)."
+
+	^ presentLength
 ]
 
 { #category : 'accessing' }
 PharoSharkPacket >> rawBytes [
-	^ rawBytes 
+	"Returns array of packet bytes starting from ethernet header."
+
+	^ rawBytes
 ]
 
 { #category : 'accessing' }
-PharoSharkPacket >> realLength [ 
-	^ realLength 
+PharoSharkPacket >> realLength [
+	"Returns on-wire length of the packet (the real length of the packet when it was initially seen in the network)."
+
+	^ realLength
 ]
 
 { #category : 'accessing' }
 PharoSharkPacket >> relativeIndex [
-	^ relativeIndex 
+	"Returns realtive index of the packet(counting from the beginning of the PCAP)."
+
+	^ relativeIndex
 ]
 
 { #category : 'accessing' }
 PharoSharkPacket >> relativeIndex: aRelativeIndex [
-	relativeIndex := aRelativeIndex 
+	"Setter for realtive index of the packet(counting from the beginning of the PCAP)."
+
+	relativeIndex := aRelativeIndex
 ]
 
 { #category : 'accessing' }
 PharoSharkPacket >> relativeTs [
-	^ relativeTs 
+	"Return relative timestamp(timediff with first packet of the PCAP)."
+
+	^ relativeTs
 ]
 
 { #category : 'accessing' }
 PharoSharkPacket >> relativeTs: aTs [
-	relativeTs := aTs 
+	"Sets relative timestamp of this packet(timediff with the first packet of given PCAP)."
+
+	relativeTs := aTs
 ]
 
-{ #category : 'default' }
+{ #category : 'accessing' }
 PharoSharkPacket >> shortName [
- 	^ 'Captured packet'
+
+	^ 'Captured packet'
 ]
 
 { #category : 'accessing' }
 PharoSharkPacket >> srcIP [
+	"Returns source IP as a string. IPv4 or IPv6 formatted, - if no IP layer."
 
 	ethernetProtocol
 		ifNil: [ ^ '-' ]
@@ -176,5 +187,7 @@ PharoSharkPacket >> srcIP [
 
 { #category : 'accessing' }
 PharoSharkPacket >> tsUsec [
-	^ tsUsec 
+	"Returns timestamp of the given packet in microseconds."
+
+	^ tsUsec
 ]
