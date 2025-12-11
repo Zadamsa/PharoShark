@@ -1,3 +1,6 @@
+"
+Represents 3(network) layer of ISO/OSI model. Parses and exposes: source and destination IP addresses, next level protocol ID, checksum, IP flags, TTL and ID fields.
+"
 Class {
 	#name : 'PharoSharkIP4Protocol',
 	#superclass : 'PharoSharkAbstractProtocol',
@@ -32,6 +35,12 @@ PharoSharkIP4Protocol class >> icmpType [
 ]
 
 { #category : 'as yet unclassified' }
+PharoSharkIP4Protocol class >> minimalHeaderSize [ 
+	"Minimal possible IPv4 header size from specification"
+	^  20
+]
+
+{ #category : 'as yet unclassified' }
 PharoSharkIP4Protocol class >> tcpType [
 	^ 6
 ]
@@ -42,12 +51,13 @@ PharoSharkIP4Protocol class >> udpType [
 ]
 
 { #category : 'accessing' }
+PharoSharkIP4Protocol >> checksum [
+	^ checksum 
+]
+
+{ #category : 'accessing' }
 PharoSharkIP4Protocol >> dstIP [
-
-	^ (dstIP inject: '' into: [ :acc :b | acc , b asString , '.']) allButLast .
-
-	"
-	^ '.' join: (dstIP collect: [ :b | b asString ])"
+	^ '.' join: (dstIP asArray collect: [ :each | each asString ]).
 ]
 
 { #category : 'accessing' }
@@ -63,8 +73,17 @@ PharoSharkIP4Protocol >> fieldsInfo [
 		  ('Protocol: ' , protocolNumber asString).
 		  ('Checksum: 0x' , (checksum printStringBase: 16)).
 		  ('Source address: ' , self srcIP).
-		  ('Destination address: ' , self dstIP)
-		  "options ?? ." }
+		  ('Destination address: ' , self dstIP) }
+]
+
+{ #category : 'accessing' }
+PharoSharkIP4Protocol >> flags [ 
+	^ flags 
+]
+
+{ #category : 'accessing' }
+PharoSharkIP4Protocol >> id [ 
+	^ id 
 ]
 
 { #category : 'initialization' }
@@ -102,7 +121,7 @@ PharoSharkIP4Protocol >> initializeFromStream: aStream [
 	^ self intializeSuccessorFromStream: aStream nextType: protocolNumber
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'initialization' }
 PharoSharkIP4Protocol >> intializeSuccessorFromStream: aStream nextType: aNextType [
 
 	aNextType = self class tcpType ifTrue: [
@@ -119,12 +138,12 @@ PharoSharkIP4Protocol >> intializeSuccessorFromStream: aStream nextType: aNextTy
 	^ true
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 PharoSharkIP4Protocol >> nextProtocol [
 	^ nextProtocol 
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 PharoSharkIP4Protocol >> protocolNumber [
 	^ protocolNumber 
 ]
@@ -137,6 +156,15 @@ PharoSharkIP4Protocol >> shortName [
 { #category : 'accessing' }
 PharoSharkIP4Protocol >> srcIP [
 
+	^ '.' join: (srcIP asArray collect: [ :each | each asString ])
+]
 
-	^ (srcIP inject: '' into: [ :acc :b | acc , b asString , '.' ]) allButLast .
+{ #category : 'accessing' }
+PharoSharkIP4Protocol >> timeToLive [ 
+	^ timeToLive 
+]
+
+{ #category : 'accessing' }
+PharoSharkIP4Protocol >> totalLength [ 
+	^ totalLength 
 ]

@@ -1,3 +1,6 @@
+"
+Presenter of subwindow that shows detailed info about selected packet and its payload.
+"
 Class {
 	#name : 'PharoSharkInspectPacketPresenter',
 	#superclass : 'SpPresenter',

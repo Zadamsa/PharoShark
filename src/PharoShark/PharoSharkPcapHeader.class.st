@@ -1,3 +1,6 @@
+"
+Represents PCAP file header. Parses and validates that header contains valid magic number, supported major and minor version, and checks that it contains supported ethernet version.
+"
 Class {
 	#name : 'PharoSharkPcapHeader',
 	#superclass : 'Object',

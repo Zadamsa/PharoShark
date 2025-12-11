@@ -1,3 +1,6 @@
+"
+Helper presenter class required to print subprotocol info as part of pop-up menu.
+"
 Class {
 	#name : 'PharoSharkPacketNode',
 	#superclass : 'Object',

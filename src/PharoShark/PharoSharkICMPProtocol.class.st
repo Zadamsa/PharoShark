@@ -1,3 +1,6 @@
+"
+Represents 3(network) layer of ISO/OSI model. Parses and exposes: type, code, checksum.
+"
 Class {
 	#name : 'PharoSharkICMPProtocol',
 	#superclass : 'PharoSharkAbstractProtocol',
@@ -12,6 +15,22 @@ Class {
 	#tag : 'Model'
 }
 
+{ #category : 'as yet unclassified' }
+PharoSharkICMPProtocol class >> minimalHeaderSize [ 
+	"type u8 + code u8 + checksum u16 + body u32"
+	^  8
+]
+
+{ #category : 'accessing' }
+PharoSharkICMPProtocol >> checksum [ 
+	^ checksum 
+]
+
+{ #category : 'accessing' }
+PharoSharkICMPProtocol >> code [ 
+	^ code 
+]
+
 { #category : 'accessing' }
 PharoSharkICMPProtocol >> fieldsInfo [
 
@@ -24,15 +43,15 @@ PharoSharkICMPProtocol >> fieldsInfo [
 { #category : 'initialization' }
 PharoSharkICMPProtocol >> initializeFromStream: aStream [
 
-	type := (aStream next: 1) reversed asInteger.
-	code := (aStream next: 1) reversed asInteger.
-	checksum := (aStream next: 2) reversed asInteger.
-	rest := (aStream next: 4) reversed asInteger.
+	type := aStream next asInteger.
+	code := aStream next asInteger.
+	checksum := (aStream next: 2) asInteger.
+	rest := (aStream next: 4) asInteger.
 
 	^ true
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 PharoSharkICMPProtocol >> nextProtocol [
 	^ nil
 ]
@@ -40,4 +59,9 @@ PharoSharkICMPProtocol >> nextProtocol [
 { #category : 'default' }
 PharoSharkICMPProtocol >> shortName [ 
 	^ 'ICMP'
+]
+
+{ #category : 'accessing' }
+PharoSharkICMPProtocol >> type [
+	^ type 
 ]

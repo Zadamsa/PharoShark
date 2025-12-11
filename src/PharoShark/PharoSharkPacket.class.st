@@ -1,3 +1,6 @@
+"
+Represents PCAP packet layer. Not a real ISO/OSI layer. Parses and exposes: microseconds timestamp, captured(presented in file) part of packet and on-wire(original, may be longer than caplen).
+"
 Class {
 	#name : 'PharoSharkPacket',
 	#superclass : 'PharoSharkAbstractProtocol',
@@ -17,6 +20,12 @@ Class {
 }
 
 { #category : 'as yet unclassified' }
+PharoSharkPacket class >> minimalHeaderSize [ 
+	"tsSec u32 + tsUsec u32 + captured length u32 + on-wire length u32"
+	^  16
+]
+
+{ #category : 'as yet unclassified' }
 PharoSharkPacket class >> usecTsToString: aTs [
 
 	| usecToSec |
@@ -27,11 +36,10 @@ PharoSharkPacket class >> usecTsToString: aTs [
 	  , ')'
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 PharoSharkPacket >> calculateHash [
-	
+
 	| portHash ipProtocol |
-	^ 0.
 	"No ethernet layer - No hash"
 	ethernetProtocol ifNil: [ ^ 0 ].
 	"No IP layer - No hash"
@@ -40,9 +48,13 @@ PharoSharkPacket >> calculateHash [
 		ifNotNil: [ :ipLayer | ipProtocol := ipLayer protocolNumber ].
 	"No transport layer - set ports to 0"
 	portHash := ethernetProtocol nextProtocol nextProtocol
-		            ifNil: [ 0 ]
+		            ifNil: [ 1 ]
 		            ifNotNil: [ :transportLayer |
-			            transportLayer srcPort bitXor: transportLayer dstPort ].
+				            (transportLayer shortName = 'UDP' or:
+					             transportLayer shortName = 'TCP')
+					            ifTrue: [
+					            transportLayer srcPort bitXor: transportLayer dstPort ]
+					            ifFalse: [ 1 ] ].
 	^ (self srcIP hash bitXor: self dstIP hash) * portHash * ipProtocol
 ]
 
@@ -56,7 +68,7 @@ PharoSharkPacket >> displayString [
 	^ 'Captured packet:'
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 PharoSharkPacket >> dstIP [
 
 	ethernetProtocol
@@ -77,7 +89,7 @@ PharoSharkPacket >> flowKey [
 	^ flowKey 
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 PharoSharkPacket >> highestParsedProtocol [
 
 	| protocol |
@@ -91,24 +103,25 @@ PharoSharkPacket >> highestParsedProtocol [
 { #category : 'initialization' }
 PharoSharkPacket >> initializeFromStream: aStream [
 
-	| copyStream savedPos tsSec x|
+	| savedPos tsSec x |
 	tsSec := (aStream next: 4) reversed asInteger.
 	tsUsec := (aStream next: 4) reversed asInteger + (tsSec * 1_000_000).
 	presentLength := (aStream next: 4) reversed asInteger.
 	realLength := (aStream next: 4) reversed asInteger.
 	savedPos := aStream position.
-	ethernetProtocol := PharoSharkEthernetProtocol parseStream:
-		                    aStream .
+	ethernetProtocol := PharoSharkEthernetProtocol parseStream: aStream.
 	flowKey := self calculateHash.
 	aStream position: savedPos.
 	rawBytes := aStream upToEnd.
 	aStream position: savedPos.
+	(self class enoughBytesLeftIn: aStream bytes: presentLength)
+		ifFalse: [ ^ false ].
 	aStream skip: presentLength.
 
-	^ aStream position <= (aStream size + 1).
+	^ true
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 PharoSharkPacket >> nextProtocol [ 
 	^ ethernetProtocol 
 ]
@@ -138,7 +151,7 @@ PharoSharkPacket >> relativeIndex: aRelativeIndex [
 	relativeIndex := aRelativeIndex 
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 PharoSharkPacket >> relativeTs [
 	^ relativeTs 
 ]
@@ -153,18 +166,12 @@ PharoSharkPacket >> shortName [
  	^ 'Captured packet'
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 PharoSharkPacket >> srcIP [
 
 	ethernetProtocol
 		ifNil: [ ^ '-' ]
 		ifNotNil: [ ^ ethernetProtocol srcIP ]
-]
-
-{ #category : 'accessing' }
-PharoSharkPacket >> treeInfo [
-
-	^ { 'Anime test' }
 ]
 
 { #category : 'accessing' }

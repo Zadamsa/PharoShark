@@ -1,3 +1,6 @@
+"
+Helper presenter class required to print string with info about protocol as part of pop-up menu.
+"
 Class {
 	#name : 'PharoSharkLabelNode',
 	#superclass : 'Object',

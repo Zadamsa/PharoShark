@@ -1,3 +1,6 @@
+"
+Statistics calculating class. Calculates all required statistics from given list of PCAP packets. Calculates IPv4/IPv6, TCP/UDP ratios. Matches top level protocols, flow lengths (in packets and bytes) to flows.
+"
 Class {
 	#name : 'PharoSharkStatistics',
 	#superclass : 'Object',
@@ -27,6 +30,19 @@ PharoSharkStatistics class >> calculateFor: aPackets [
 ]
 
 { #category : 'as yet unclassified' }
+PharoSharkStatistics class >> dictionaryToValueFrequencyDictionary: aDictionary [
+
+	| frequencyDictionary |
+	frequencyDictionary := Dictionary new.
+	aDictionary valuesDo: [ :value |
+			frequencyDictionary at: value ifAbsentPut: [ 0 ].
+			frequencyDictionary
+				at: value
+				put: (frequencyDictionary at: value) + 1 ].
+	^ frequencyDictionary
+]
+
+{ #category : 'calcu' }
 PharoSharkStatistics >> calculateRatios: aPackets [
 
 	ip4Ratio := (aPackets count: [ :packet | packet contains: 'IPv4' ])
@@ -79,8 +95,10 @@ PharoSharkStatistics >> initializeFrom: aPackets [
 	packetPorts := Dictionary new.
 
 	aPackets do: [ :packet | self updatePacketData: packet ].
+	flowProtocols := self class dictionaryToValueFrequencyDictionary:
+		                 flowProtocols.
 
-	self calculateRatios: aPackets.
+	self calculateRatios: aPackets
 ]
 
 { #category : 'accessing' }
@@ -118,7 +136,7 @@ PharoSharkStatistics >> udpRatio [
 	^ udpRatio
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'calcu' }
 PharoSharkStatistics >> updatePacketData: aPacket [
 
 	flowPacketLengths at: aPacket flowKey ifAbsentPut: [ 0 ].
@@ -131,39 +149,38 @@ PharoSharkStatistics >> updatePacketData: aPacket [
 		at: aPacket flowKey
 		put: (flowByteLengths at: aPacket flowKey) + aPacket realLength.
 
-	packetProtocols at: aPacket highestParsedProtocol shortName ifAbsentPut: [ 0 ].
 	packetProtocols
 		at: aPacket highestParsedProtocol shortName
-		put: (packetProtocols at: aPacket highestParsedProtocol shortName) + 1.
+		ifAbsentPut: [ 0 ].
+	packetProtocols
+		at: aPacket highestParsedProtocol shortName
+		put:
+		(packetProtocols at: aPacket highestParsedProtocol shortName) + 1.
 
 	flowProtocols
 		at: aPacket flowKey
-		ifAbsentPut: [ aPacket highestParsedProtocol ].
+		ifAbsentPut: [ aPacket highestParsedProtocol shortName ].
 
-	self updatePortData: aPacket.
-
-	"packetProtocols at: aPacket highestParsedProtocol ifAbsentPut: [ 0 ].
-	packetProtocols
-		at: aPacket highestParsedProtocol
-		put: (packetProtocols at: aPacket highestParsedProtocol) + 1"
+	self updatePortData: aPacket
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'calcu' }
 PharoSharkStatistics >> updatePortData: aPacket [
 
 	(aPacket highestParsedProtocol shortName = 'UDP' or:
-		 aPacket highestParsedProtocol shortName = 'TCP') ifTrue: [
-			packetPorts
-				at: aPacket highestParsedProtocol srcPort
-				ifAbsentPut: [ 0 ].
-			packetPorts
-				at: aPacket highestParsedProtocol srcPort
-				put: (packetPorts at: aPacket highestParsedProtocol srcPort) + 1.
+		 aPacket highestParsedProtocol shortName = 'TCP') ifFalse: [ ^ nil ].
 
-			packetPorts
-				at: aPacket highestParsedProtocol dstPort
-				ifAbsentPut: [ 0 ].
-			packetPorts
-				at: aPacket highestParsedProtocol dstPort
-				put: (packetPorts at: aPacket highestParsedProtocol srcPort) + 1 ]
+	packetPorts
+		at: aPacket highestParsedProtocol srcPort
+		ifAbsentPut: [ 0 ].
+	packetPorts
+		at: aPacket highestParsedProtocol srcPort
+		put: (packetPorts at: aPacket highestParsedProtocol srcPort) + 1.
+
+	packetPorts
+		at: aPacket highestParsedProtocol dstPort
+		ifAbsentPut: [ 0 ].
+	packetPorts
+		at: aPacket highestParsedProtocol dstPort
+		put: (packetPorts at: aPacket highestParsedProtocol dstPort) + 1
 ]

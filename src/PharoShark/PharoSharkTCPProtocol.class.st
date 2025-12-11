@@ -1,3 +1,6 @@
+"
+Represents 4(transport) layer of ISO/OSI model. Parses and exposes: source and destination ports, sequence and acknowledgement numbers, TCP flags, window size.
+"
 Class {
 	#name : 'PharoSharkTCPProtocol',
 	#superclass : 'PharoSharkAbstractProtocol',
@@ -16,6 +19,22 @@ Class {
 	#package : 'PharoShark',
 	#tag : 'Model'
 }
+
+{ #category : 'as yet unclassified' }
+PharoSharkTCPProtocol class >> minimalHeaderSize [ 
+	"Minimal possible TCP header size from specification"
+	^  20
+]
+
+{ #category : 'accessing' }
+PharoSharkTCPProtocol >> acknowledgment [ 
+	^ ack
+]
+
+{ #category : 'accessing' }
+PharoSharkTCPProtocol >> checksum [ 
+	^ checksum 
+]
 
 { #category : 'accessing' }
 PharoSharkTCPProtocol >> dstPort [
@@ -37,6 +56,11 @@ PharoSharkTCPProtocol >> fieldsInfo [
 		  ('Urgent: ' , urgentPtr asString) }
 ]
 
+{ #category : 'accessing' }
+PharoSharkTCPProtocol >> flags [ 
+	^ flags 
+]
+
 { #category : 'initialization' }
 PharoSharkTCPProtocol >> initializeFromStream: aStream [
 
@@ -53,9 +77,14 @@ PharoSharkTCPProtocol >> initializeFromStream: aStream [
 	^ true
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 PharoSharkTCPProtocol >> nextProtocol [
 	^ nil
+]
+
+{ #category : 'accessing' }
+PharoSharkTCPProtocol >> sequence [ 
+	^ seq
 ]
 
 { #category : 'default' }
@@ -66,4 +95,9 @@ PharoSharkTCPProtocol >> shortName [
 { #category : 'accessing' }
 PharoSharkTCPProtocol >> srcPort [
 	^ srcPort 
+]
+
+{ #category : 'accessing' }
+PharoSharkTCPProtocol >> window [ 
+	^ window 
 ]

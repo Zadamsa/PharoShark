@@ -1,3 +1,6 @@
+"
+Represents 4(transport) layer of ISO/OSI model. Parses and exposes: source and destination ports, checksum.
+"
 Class {
 	#name : 'PharoSharkUDPProtocol',
 	#superclass : 'PharoSharkAbstractProtocol',
@@ -11,6 +14,17 @@ Class {
 	#package : 'PharoShark',
 	#tag : 'Model'
 }
+
+{ #category : 'as yet unclassified' }
+PharoSharkUDPProtocol class >> minimalHeaderSize [ 
+	"Minimal possible UDP header size from specification"
+	^  8
+]
+
+{ #category : 'accessing' }
+PharoSharkUDPProtocol >> checksum [ 
+	^ checksum 
+]
 
 { #category : 'accessing' }
 PharoSharkUDPProtocol >> dstPort [ 
@@ -30,15 +44,15 @@ PharoSharkUDPProtocol >> fieldsInfo [
 { #category : 'initialization' }
 PharoSharkUDPProtocol >> initializeFromStream: aStream [
 
-	srcPort := (aStream next: 2) reversed asInteger.
-	dstPort := (aStream next: 2) reversed asInteger.
-	length := (aStream next: 2) reversed asInteger.
-	checksum := (aStream next: 2) reversed asInteger.
+	srcPort := (aStream next: 2) asInteger.
+	dstPort := (aStream next: 2) asInteger.
+	length := (aStream next: 2) asInteger.
+	checksum := (aStream next: 2) asInteger.
 
 	^ true
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 PharoSharkUDPProtocol >> nextProtocol [
 	^ nil
 ]

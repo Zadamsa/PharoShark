@@ -1,3 +1,6 @@
+"
+The presenter for window that opens on ""Statistics"" button click. Displays calculated statistics for given PCAP file. 
+"
 Class {
 	#name : 'PharoSharkStatisticsWindow',
 	#superclass : 'SpPresenter',
@@ -5,9 +8,9 @@ Class {
 		'packetLengthHistogram',
 		'flowPacketLengthHistogram',
 		'flowByteLengthsHistogram',
-		'packetProtocolsHistogram',
-		'flowProtocolsHistogram',
-		'textStatisticsWindow'
+		'packetPortsHistogram',
+		'textStatisticsWindow',
+		'protocolsStatisticsWindow'
 	],
 	#category : 'PharoShark-Present',
 	#package : 'PharoShark',
@@ -17,21 +20,16 @@ Class {
 { #category : 'as yet unclassified' }
 PharoSharkStatisticsWindow class >> buildBarPlotFromDictionary: aDictionary title: aTitle [
 
-	| xValues plot labels |
-	labels := aDictionary keys asArray.
-	xValues := (1 to: aDictionary size) asArray.
+	| xValues yValues plot |
+	aDictionary size <= 1 ifTrue: [
+		^ SpLabelPresenter new label: aTitle , ' cannot be build' ].
+
+	xValues := aDictionary keys asSortedCollection asArray.
+	yValues := xValues collect: [ :x | aDictionary at: x ].
 	plot := RSBarPlot new
-		        x: xValues y: aDictionary values;
+		        x: xValues y: yValues;
 		        title: aTitle;
 		        yourself.
-
-	1 to: xValues size do: [ :i |
-			| textMorph |
-			textMorph := TextMorph new contents: (labels keys at: i).
-			"позиция под графиком; координаты нужно подобрать под твой график"
-			textMorph position: 50 * i @ 10.
-			plot addMorph: textMorph ].
-
 
 	^ plot asPresenter
 ]
@@ -48,6 +46,17 @@ PharoSharkStatisticsWindow class >> buildHistogramFromArray: anArray title: aTit
 ]
 
 { #category : 'as yet unclassified' }
+PharoSharkStatisticsWindow class >> buildHistogramFromDictionary: aDictionary title: aTitle [
+
+	aDictionary size <= 1 ifTrue: [
+		^ SpLabelPresenter new label: aTitle , ' cannot be build. Only one value' ].
+	^ (RSHistogramPlot new
+		   x: aDictionary keys y: aDictionary values;
+		   title: aTitle;
+		   yourself) asPresenter
+]
+
+{ #category : 'as yet unclassified' }
 PharoSharkStatisticsWindow class >> buildHistogramFromDictionaryValues: aDictionary title: aTitle [
 
 	^ self
@@ -56,26 +65,64 @@ PharoSharkStatisticsWindow class >> buildHistogramFromDictionaryValues: aDiction
 		  title: aTitle
 ]
 
+{ #category : 'as yet unclassified' }
+PharoSharkStatisticsWindow class >> createProtocolStatisticsText: aStatistics [
+
+	| packetsTotal flowsTotal strings |
+	packetsTotal := aStatistics packetLengths size.
+	flowsTotal := aStatistics flowPacketLengths size.
+	strings := { 'Highest parsed packet protocols of the provided PCAP file:' }
+		           asOrderedCollection.
+
+	aStatistics packetProtocols keysAndValuesDo: [ :key :value |
+			strings add: key , ' seen ' , value asString , ' times('
+				, ((value asFloat roundUpTo: 0.01) / packetsTotal * 100) asString , '%)' ].
+
+	strings add: ''.
+	strings add:
+		'Highest parsed flow protocols of the provided PCAP file:'.
+	aStatistics flowProtocols keysAndValuesDo: [ :key :value |
+			strings add: key , ' seen ' , value asString , ' times('
+				, (value asFloat / flowsTotal * 100) asString , '%)' ].
+
+	^ String cr join: strings
+]
+
+{ #category : 'as yet unclassified' }
+PharoSharkStatisticsWindow class >> createRatioStatisticsText: aStatistics [
+
+	^ String cr join: {
+			  'Ratios of packets containing given protocols; '.
+			  ('IPv4 ratio: ' , (aStatistics ip4Ratio * 100) asString , '%').
+			  ('IPv6 ratio: ' , (aStatistics ip6Ratio * 100) asString , '%').
+			  ('TCP ratio: ' , (aStatistics tcpRatio * 100) asString , '%').
+			  ('UDP ratio: ' , (aStatistics udpRatio * 100) asString , '%').
+			  ('ICMP ratio: ' , (aStatistics icmpRatio * 100) asString , '%').
+			  ('ICMPv6 ratio: ' , (aStatistics icmp6Ratio * 100) asString , '%') }
+]
+
 { #category : 'initialization' }
 PharoSharkStatisticsWindow >> initializeLayout [
 
-	| graphLayout |
+	| graphLayout textWindowLayout |
 	graphLayout := SpBoxLayout newVertical
 		               spacing: 5;
 		               add: (SpBoxLayout newHorizontal
 				                spacing: 5;
 				                add: packetLengthHistogram;
-				                add: packetLengthHistogram;
 				                add: flowPacketLengthHistogram);
 		               add: (SpBoxLayout newHorizontal
 				                spacing: 5;
 				                add: flowByteLengthsHistogram;
-				                add: packetProtocolsHistogram;
-				                add: flowProtocolsHistogram);
+				                add: packetPortsHistogram);
 		               yourself.
+	textWindowLayout := SpBoxLayout newHorizontal
+		                    add: textStatisticsWindow;
+		                    add: protocolsStatisticsWindow;
+		                    yourself.
 
 	self layout: (SpBoxLayout newVertical
-			 add: textStatisticsWindow;
+			 add: textWindowLayout;
 			 add: graphLayout;
 			 spacing: 10;
 			 yourself)
@@ -92,10 +139,10 @@ PharoSharkStatisticsWindow >> initializePresenters [
 PharoSharkStatisticsWindow >> instantiatePresenters [
 
 	packetLengthHistogram := self instantiate: SpNullPresenter.
+	protocolsStatisticsWindow := self instantiate: SpNullPresenter.
 	flowPacketLengthHistogram := self instantiate: SpNullPresenter.
 	flowByteLengthsHistogram := self instantiate: SpNullPresenter.
-	packetProtocolsHistogram := self instantiate: SpNullPresenter.
-	flowProtocolsHistogram := self instantiate: SpNullPresenter.
+	packetPortsHistogram := self instantiate: SpNullPresenter.
 	textStatisticsWindow := self instantiate: SpNullPresenter
 ]
 
@@ -114,24 +161,19 @@ PharoSharkStatisticsWindow >> packetStatistics: aStatistics [
 		                            buildHistogramFromDictionaryValues:
 		                            aStatistics flowByteLengths
 		                            title: 'Flow length histogram(bytes)'.
-	packetProtocolsHistogram := self class
-		                            buildBarPlotFromDictionary:
-		                            aStatistics packetProtocols
-		                            title: 'Packet protocols'.
-	"flowProtocolsHistogram := (RSHistogramPlot new
-		                           x: aStatistics packetLengths;
-		                           title: 'Packet length histogram';
-		                           yourself) asPresenter."
-
+	packetPortsHistogram := self class
+		                        buildBarPlotFromDictionary: 
+		                        aStatistics packetPorts
+		                        title: 'Ports frequence histogram'.
 
 	textStatisticsWindow := self instantiate: SpTextPresenter.
-	textStatisticsWindow text: (String cr join: {
-				 ('IPv4 ratio: ' , aStatistics ip4Ratio asString).
-				 ('IPv6 ratio: ' , aStatistics ip6Ratio asString).
-				 ('TCP ratio: ' , aStatistics tcpRatio asString).
-				 ('UDP ratio: ' , aStatistics udpRatio asString).
-				 ('ICMP ratio: ' , aStatistics icmpRatio asString).
-				 ('ICMPv6 ratio: ' , aStatistics icmp6Ratio asString) }).
+	textStatisticsWindow text:
+		(self class createRatioStatisticsText: aStatistics).
+	textStatisticsWindow editable: false.
 
+	protocolsStatisticsWindow := self instantiate: SpTextPresenter.
+	protocolsStatisticsWindow text:
+		(self class createProtocolStatisticsText: aStatistics).
+	protocolsStatisticsWindow editable: false.
 	self initializeLayout
 ]

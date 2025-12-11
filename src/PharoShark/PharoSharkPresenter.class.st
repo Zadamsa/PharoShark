@@ -1,3 +1,6 @@
+"
+Main window presenter. Holds all other subwindows.
+"
 Class {
 	#name : 'PharoSharkPresenter',
 	#superclass : 'SpPresenter',

@@ -1,3 +1,6 @@
+"
+Main model class of MVP architecture.
+"
 Class {
 	#name : 'PharoSharkModel',
 	#superclass : 'Object',
@@ -26,7 +29,7 @@ PharoSharkModel class >> validateHeader: aHeader [
 	^ nil
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'calc' }
 PharoSharkModel >> calculateStatistics: aPackets [
 	^ PharoSharkStatistics calculateFor: aPackets 
 ]

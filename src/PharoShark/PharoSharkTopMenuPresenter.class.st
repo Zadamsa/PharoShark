@@ -1,3 +1,6 @@
+"
+The presenter for subwindow that holds control buttons of the app: ""Open"" and ""Statistics"".
+"
 Class {
 	#name : 'PharoSharkTopMenuPresenter',
 	#superclass : 'SpPresenter',
@@ -17,6 +20,7 @@ PharoSharkTopMenuPresenter >> connectPresenters [
 
 	openFileButton action: [
 			parseFileCallaback ifNotNil: [
+					openStatisticsButton enabled: true.
 					parseFileCallaback value:
 						((UIManager default chooseFullFileNameMatching: '*.pcap')
 							 ifNotNil: [ :path | path asFileReference ]) ] ].
@@ -50,7 +54,8 @@ PharoSharkTopMenuPresenter >> instantiatePresenters [
 	openFileButton label: 'Open'.
 	
 	openStatisticsButton := self newButton.
-	openStatisticsButton label: 'Staticstics'
+	openStatisticsButton label: 'Staticstics'.
+	openStatisticsButton enabled: false.
 ]
 
 { #category : 'accessing' }
