@@ -67,5 +67,7 @@ PharoSharkAbstractProtocol >> nextProtocol [
 
 { #category : 'accessing' }
 PharoSharkAbstractProtocol >> shortName [
-	self subclassResponsibility 
+	"Must return a string to uniquely identify current protocol"
+
+	self subclassResponsibility
 ]
